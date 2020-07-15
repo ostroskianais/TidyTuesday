@@ -1,0 +1,169 @@
+---
+title: "Week29"
+author: "Anais Ostroski"
+date: "7/14/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r prep, message=FALSE}
+## packages
+library(tidyverse)
+library(ggtext)
+library(pdftools)
+library(extrafont)
+```
+
+```{r data}
+# Read data with the tidytuesdayR package
+df <- tidytuesdayR::tt_load(2020, week = 29)
+df <- df$astronauts
+```
+
+```{r peak}
+# Glimpse and Summary
+glimpse(df)
+summary(df)
+```
+
+```{r}
+average_duration <- df %>% group_by(year_of_mission) %>% summarise(avg_hours_mission = mean(hours_mission))
+
+number_mission <- df %>% select(name) %>% group_by(name) %>%  add_count() %>% unique() 
+
+females <- df %>% filter(sex == "female")
+quantile(number_mission$n, 0.5)
+quantile(number_mission$n, 0.85)
+```
+
+```{r labs}
+df_title <- tibble(x = 1995, y = 700,
+                  label = c("Duration of missions"))
+
+df_annot <- tibble(x = c(1965, #VT
+                         2003, #VP
+                         2005, #JR + FCD
+                         2020), #CK
+                   y = c(200, #VT
+                         420, #VP
+                         270, #JR + FCD
+                         350), #CK
+                   label = c("Valentina Tereshkova was the first woman to go on a solo space mission",
+                             "Valeri Polyakov is the astronaut with the longest mission.",
+                             "These are Jerry Ross and Franklin Chang Diaz on their 7th mission!",
+                             "Christina Koch broke the record for longest continuous time in space by a woman!"))
+
+```
+
+
+```{r}
+ggplot() +
+  # Each dot is an astronaut, their position is based on year of mission and duration of mission
+  geom_point(data=df, shape = 16, size = 3, show.legend = FALSE,
+             aes(y=hours_mission/24, x=year_of_mission, 
+                 
+                 # Color by sex
+                 color=sex, 
+                 
+                 # Size and transparency are each astronauts number of missions
+                 #size = mission_number, 
+                 
+                 alpha = mission_number)) +
+  
+  # Scale for minimum transparency of 0.5
+  scale_alpha(range = c(0.5,1), guide = FALSE) +
+  
+  # Scale size
+  scale_size(guide = FALSE) +
+  
+  # Add gender colors
+  scale_color_manual(values = c("gold", "skyblue")) +
+  
+  # Add average duration of missions
+  geom_line(data=average_duration, 
+            aes(x=year_of_mission, y=avg_hours_mission/24), 
+            color="red") +
+  
+  # Annotations
+  geom_textbox(data = df_annot,
+            aes(x = x, y = y, label = label), 
+            color="white", 
+            box.colour = "gray15",
+            maxwidth = unit(30, "mm"),
+            fill = "gray15",
+            size = 3) +
+  
+  # Arrows
+  
+  # Valentina Tereshkova
+  annotate("curve", x = 1963, xend = 1965, y = 2, yend = 150, curvature = 0.1, 
+           size = .5, arrow = arrow(length = unit(2, "mm")), colour = "white") +
+  
+  # Valeri Polyakov
+  annotate("curve", x = 1994, xend = 2000, y = 437.7, yend = 420, curvature = 0.1, 
+           size = .5, arrow = arrow(length = unit(2, "mm")), colour = "white") +
+  
+  # Ross
+  annotate("curve", x = 2002, xend = 2005, y = 10.8, yend = 250, curvature = 0.05, 
+           size = .5, arrow = arrow(length = unit(2, "mm")), colour = "white") +  
+  
+  # Franklin
+  annotate("curve", x = 2002, xend = 2005, y = 13.9, yend = 250, curvature = -0.1, 
+           size = .5, arrow = arrow(length = unit(2, "mm")), colour = "white") +  
+
+  # Christina Koch
+  annotate("curve", x = 2019, xend = 2020, y = 307.2, yend = 330, curvature = 0.1, 
+           size = .5, arrow = arrow(length = unit(2, "mm")), colour = "white") + 
+  
+  # Labs
+  labs(x ="\n Year",
+       y = "Duration of mission (days)\n",
+       title = "TIME IN SPACE",
+       subtitle = "Each dot represents an astronaut on a mission! 
+       
+       Female astronauts are highlighted in yellow. Transparency represents the number of missions for each astronaut and mission. The red line is the average mission time for each year.
+       
+       Approximatelly 80% of the missions last less than 74 days, but some can reach 437 days.
+       
+       More than 60% of the astronauts get to go on a space mission more than once! The top 15% go to space more than 4 times.",
+       caption = "TidyTuesday: Week 29. Visualization by Anaís Ostoski") +
+      
+  # Theme
+  theme_bw() +
+  theme(# Plot area
+        plot.background = element_rect(fill="gray15"),
+        
+        # Panel area
+        panel.background = element_rect(fill="gray15"),
+        panel.grid = element_blank(),
+        
+        # Axis
+        axis.text = element_text(color = "white"),
+        axis.title = element_text(color = "white"),
+        axis.line = element_line(colour = "white"),
+        
+        # Labs
+        plot.title = element_text(family = "sans", colour = "white", face = "bold"),
+        text = element_text(family = "sans", colour = "white"))
+
+ggsave(filename = "astronauts_plot.png", 
+       dpi = 400, width = 15, height = 10)
+```
+
+```{r}
+ggplot() +
+  geom_point(data=df, aes(y=mission_title, x=year_of_mission)) +
+  theme_classic() +
+  theme(plot.background = element_rect(fill="gray15"),
+        panel.background = element_rect(fill="gray15"),
+        panel.grid = element_blank(),
+        axis.text = element_text(color = "white"),
+        axis.title = element_text(color = "white"),
+        axis.line = element_line(colour = "white"),
+        legend.background = element_rect(fill="gray15"),
+        legend.text = element_text(color = "white"),
+        legend.title = element_text(color = "white"))
+```
