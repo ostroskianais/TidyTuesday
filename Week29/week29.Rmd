@@ -35,6 +35,7 @@ average_duration <- df %>% group_by(year_of_mission) %>% summarise(avg_hours_mis
 number_mission <- df %>% select(name) %>% group_by(name) %>%  add_count() %>% unique() 
 
 females <- df %>% filter(sex == "female")
+
 quantile(number_mission$n, 0.5)
 quantile(number_mission$n, 0.85)
 ```
@@ -96,7 +97,7 @@ ggplot() +
             fill = "gray15",
             size = 3) +
   
-  # Arrows
+  ## Arrows
   
   # Valentina Tereshkova
   annotate("curve", x = 1963, xend = 1965, y = 2, yend = 150, curvature = 0.1, 
@@ -106,11 +107,11 @@ ggplot() +
   annotate("curve", x = 1994, xend = 2000, y = 437.7, yend = 420, curvature = 0.1, 
            size = .5, arrow = arrow(length = unit(2, "mm")), colour = "white") +
   
-  # Ross
+  # Jerry Ross
   annotate("curve", x = 2002, xend = 2005, y = 10.8, yend = 250, curvature = 0.05, 
            size = .5, arrow = arrow(length = unit(2, "mm")), colour = "white") +  
   
-  # Franklin
+  # Franklin Chang Diaz
   annotate("curve", x = 2002, xend = 2005, y = 13.9, yend = 250, curvature = -0.1, 
            size = .5, arrow = arrow(length = unit(2, "mm")), colour = "white") +  
 
@@ -153,17 +154,3 @@ ggsave(filename = "astronauts_plot.png",
        dpi = 400, width = 15, height = 10)
 ```
 
-```{r}
-ggplot() +
-  geom_point(data=df, aes(y=mission_title, x=year_of_mission)) +
-  theme_classic() +
-  theme(plot.background = element_rect(fill="gray15"),
-        panel.background = element_rect(fill="gray15"),
-        panel.grid = element_blank(),
-        axis.text = element_text(color = "white"),
-        axis.title = element_text(color = "white"),
-        axis.line = element_line(colour = "white"),
-        legend.background = element_rect(fill="gray15"),
-        legend.text = element_text(color = "white"),
-        legend.title = element_text(color = "white"))
-```
