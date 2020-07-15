@@ -45,14 +45,14 @@ df_title <- tibble(x = 1995, y = 700,
                   label = c("Duration of missions"))
 
 df_annot <- tibble(x = c(1965, #VT
-                         2003, #VP
+                         2004, #VP
                          2005, #JR + FCD
-                         2020), #CK
+                         2019), #CK
                    y = c(200, #VT
                          420, #VP
-                         270, #JR + FCD
-                         350), #CK
-                   label = c("Valentina Tereshkova was the first woman to go on a solo space mission",
+                         285, #JR + FCD
+                         380), #CK
+                   label = c("Valentina Tereshkova \n was the first woman to go on a solo space mission",
                              "Valeri Polyakov is the astronaut with the longest mission.",
                              "These are Jerry Ross and Franklin Chang Diaz on their 7th mission!",
                              "Christina Koch broke the record for longest continuous time in space by a woman!"))
@@ -93,9 +93,9 @@ ggplot() +
             aes(x = x, y = y, label = label), 
             color="white", 
             box.colour = "gray15",
-            maxwidth = unit(30, "mm"),
+            maxwidth = unit(38, "mm"),
             fill = "gray15",
-            size = 3) +
+            size = 4) +
   
   ## Arrows
   
@@ -116,7 +116,7 @@ ggplot() +
            size = .5, arrow = arrow(length = unit(2, "mm")), colour = "white") +  
 
   # Christina Koch
-  annotate("curve", x = 2019, xend = 2020, y = 307.2, yend = 330, curvature = 0.1, 
+  annotate("curve", x = 2019, xend = 2020, y = 307.2, yend = 360, curvature = 0.1, 
            size = .5, arrow = arrow(length = unit(2, "mm")), colour = "white") + 
   
   # Labs
@@ -130,7 +130,7 @@ ggplot() +
        Approximatelly 80% of the missions last less than 74 days, but some can reach 437 days.
        
        More than 60% of the astronauts get to go on a space mission more than once! The top 15% go to space more than 4 times.",
-       caption = "TidyTuesday: Week 29. Visualization by Anaís Ostoski") +
+       caption = "TidyTuesday: Week 29. Data by Mariya Stavnichuk and Tatsuya Corlett. Visualization by Anaís Ostoski") +
       
   # Theme
   theme_bw() +
