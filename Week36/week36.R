@@ -33,9 +33,10 @@ long_crops_average <- long_crops %>%
          min = min(crop_production),
          max = max(crop_production)) %>% 
   ungroup() %>% 
+  
   mutate(
     crop = fct_reorder(crop, med),
-    y = as.numeric(crop) - .3) ## last peace of code from Cedric Scherer 
+    y = as.numeric(crop) - .3) ## this "mutate" peace of code is from Cedric Scherer. Very cool way to define the y axis! 
 
 # Crop Global average
 crops_global <- long_crops_average %>% 
@@ -62,7 +63,7 @@ text1 <- tibble(x = 45, y = 5,
                average yields for barley and wheat. Mali reaches an average
                productivity of 55 tonnes banana/hectares. Italy has the highest average yield for Soybeans." )
 
-text2 <- tibble(x = 45, y = 3.5,
+text2 <- tibble(x = 45, y = 3,
                label = "Some countries prioritize some crops over others given climate, economy, available land, etc. 
                Guatemala, for example, has the lowest value for cassava yield, but performs well above average when 
                producing bananas (30 ton/ha). Other countries, like Brazil, have yield values very similar to the 
@@ -87,6 +88,7 @@ ggplot(data = long_crops_average, aes(x = crop_production, y=y)) +
   ggtext::geom_textbox(data = text1, aes(x = x, y = y, label = label),
                lineheight = 1.3,
                width = unit(7, "inch"),
+               size = 5,
                box.color = NA,
                family = "Nirmala UI") +
   
@@ -94,6 +96,7 @@ ggplot(data = long_crops_average, aes(x = crop_production, y=y)) +
   ggtext::geom_textbox(data = text2, aes(x = x, y = y, label = label),
                        lineheight = 1.3,
                        width = unit(7, "inch"),
+                       size = 5,
                        box.color = NA,
                        family = "Nirmala UI") +
   
@@ -101,9 +104,11 @@ ggplot(data = long_crops_average, aes(x = crop_production, y=y)) +
   ggtext::geom_textbox(data = credit, aes(x = x, y = y, label = label),
                        lineheight = 1.3,
                        width = unit(7.5, "inch"),
-                       size = 3,
+                       size = 5,
                        box.color = NA,
                        family = "Nirmala UI") +
+  
+  # The code below is based on Cedric Scherer's code for coffee ratings (week 28, 2020)!
   
   ## labels crops
   geom_text(data = long_crops_average, aes(x = max, y = y, label = crop),
@@ -131,7 +136,7 @@ ggplot(data = long_crops_average, aes(x = crop_production, y=y)) +
     hjust = 0
   ) +
   
-  ## stripe
+  ## stripe Adde
   ggdist::stat_interval(
     aes(y = y - .05),
     orientation = "horizontal",
@@ -139,21 +144,22 @@ ggplot(data = long_crops_average, aes(x = crop_production, y=y)) +
     stroke = 0, size = 1.4, show.legend = FALSE
   ) +
   
-  ## dots
+  ## points
   ggdist::stat_dots(
     quantiles = NA,
     orientation = "horizontal",
     normalize = "none",
-    scale = .87,
+    scale = 0.85,
     color = "#6f4e37",
-    fill = "#6f4e37"
-  ) +
+    fill = "#6f4e37",
+    size=1.5) +
   
-  xlim(-10, 70) +
+  xlim(-5, 70) +
   
   theme_void()
 
-ggsave()
+ggsave(filename = "crop_yield.png", 
+       dpi = 400, width = 15, height = 10)
 
 
 
