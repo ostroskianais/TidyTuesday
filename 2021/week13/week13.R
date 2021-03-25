@@ -89,7 +89,7 @@ data %>%
   
   # line between rcid description and year
   geom_segment(aes(x=x, xend=x, 
-                   y = year_y + 23.5, yend=year_y+30), 
+                   y = year_y + 25, yend=year_y+30), 
                linetype = "dotted", color = "#F9F6F0") +
   
   # rcid description
@@ -108,7 +108,7 @@ data %>%
   
   # year in circle
   geom_text(aes(label = year, y = year_y + 20), 
-            size = 15,
+            size = 12,
             family = "Cardo", 
             color = "#F9F6F0") +
   
